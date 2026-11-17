@@ -1,19 +1,18 @@
-# Исходные данные предварительного расчёта
+# Расчётные данные проекта
 
 | Файл | Содержание |
 | --- | --- |
-| [estimates.csv](estimates.csv) |25 пакетов, a/m/b, ставки, формулы |
-| [pert-activities.csv](pert-activities.csv) |Сроки и резервы реальных дуг |
-| [pert-events.csv](pert-events.csv) |Ранние и поздние события |
-| [pert-arcs.csv](pert-arcs.csv) |Все реальные и фиктивные дуги с резервами |
-| [schedule.csv](schedule.csv) |Два ресурсных сценария |
-| [resources.csv](resources.csv) |Часы и ставки участников |
-| [weekly-load.csv](weekly-load.csv) |Загрузка сценария 9 ч/нед |
-| [risks.csv](risks.csv) |Структурированный реестр рисков |
-| [backlog.csv](backlog.csv) |18 историй |
-| [tracker-seed.csv](tracker-seed.csv) |25 пакетов,18 историй,16 задачI1; ещё не журнал факта |
-| [model.py](model.py) / [model.json](model.json) |Алгоритм и рассчитанные значения |
+| [estimates.csv](estimates.csv) | Оценки 25 пакетов ИСР |
+| [model.json](model.json) | Исходная модель расчёта |
+| [model.py](model.py) | Алгоритм PERT и ресурсного выравнивания |
+| [pert-activities.csv](pert-activities.csv) | Сроки и резервы реальных работ |
+| [pert-events.csv](pert-events.csv) | Ранние и поздние сроки событий |
+| [pert-arcs.csv](pert-arcs.csv) | Реальные и фиктивные дуги |
+| [resources.csv](resources.csv) | Участники, ставки и фонд времени |
+| [schedule.csv](schedule.csv) | Ресурсное расписание |
+| [weekly-load.csv](weekly-load.csv) | Недельная загрузка |
+| [risks.csv](risks.csv) | Реестр рисков |
+| [backlog.csv](backlog.csv) | 18 пользовательских историй |
+| [tracker-seed.csv](tracker-seed.csv) | Исходный состав 59 карточек |
 
-CSV используют UTF-8 с BOM и запятую. В estimates.csv поля с `=` являются формулами для табличного редактора; model.json содержит рассчитанные значения.
-
-Чтобы воспроизвести пример без изменения репозитория, скопируйте model.py в пустой временный каталог, создайте в нём папку work и выполните `python model.py`. Результат сохраняется в work/model.json. Скрипт не обращается к сети и не изменяет приложение. Текущая модель — сценарий до аудита кода, не baseline.
+Сумма оценок пакетов составляет 220 часов, стоимость — 167 800 рублей. Оценки задач являются детализацией соответствующих пакетов. Часы задач и пакетов не складываются повторно. Фактическое время хранится в отдельном журнале контроля.
