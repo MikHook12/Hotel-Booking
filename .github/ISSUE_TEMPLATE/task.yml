@@ -1,0 +1,39 @@
+name: Задача проекта
+description: Конечная задача с ИСР, ответственным, результатом и учётом часов
+title: "[ИСР x.x] "
+body:
+  - type: input
+    id: wbs
+    attributes:
+      label: Основной код ИСР
+      description: Один код из словаря 1.1–5.5
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Ответственный
+      description: ФИО и подтверждённый GitHub-логин
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Результат и критерии завершения
+      value: "- [ ] Результат сохранён и проверен.
+- [ ] Ссылка на результат добавлена."
+    validations:
+      required: true
+  - type: input
+    id: iteration
+    attributes:
+      label: Итерация и предшественники
+  - type: input
+    id: estimate
+    attributes:
+      label: Плановые часы и основание оценки
+  - type: textarea
+    id: actual
+    attributes:
+      label: Фактические часы и проверка
+      description: Заполнять по факту; отсутствие записи не означает ноль потраченных часов.

@@ -1,0 +1,14 @@
+name: Documentation
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check links, identifiers and calculation example
+        run: python3 scripts/validate_docs.py
