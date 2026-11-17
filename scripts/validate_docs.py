@@ -60,6 +60,46 @@ if any(r['Статус']!='Сделано' for r in current if r['ID'] in ['WP-1
 if sum(float(r['План, ч']) for r in current if r['Тип']=='Задача')!=45:
     errors.append('First iteration scenario should total 45h')
 
+# Iteration plans and budget allocation use the same WBS and resource model.
+from collections import defaultdict
+planned=defaultdict(float)
+for phase,expected_hours in [(5,45),(6,30)]:
+    with (ROOT/f'docs/phase-{phase}/data/iteration-{phase-4}.csv').open(encoding='utf-8-sig',newline='') as f:
+        iteration=list(csv.DictReader(f))
+    if len(iteration)!=16 or len({r['ID'] for r in iteration})!=16:
+        errors.append(f'Phase {phase}: expected 16 unique tasks')
+    if abs(sum(float(r['План ч']) for r in iteration)-expected_hours)>1e-8:
+        errors.append(f'Phase {phase}: inconsistent hours')
+    workload=defaultdict(float)
+    for r in iteration:
+        if r['ИСР'] not in tasks:
+            errors.append(f"Unknown WBS in {r['ID']}")
+        planned[r['ИСР']]+=float(r['План ч'])
+        workload[r['Ответственный']]+=float(r['План ч'])
+    if any(v>12 for v in workload.values()):
+        errors.append(f'Phase {phase}: resource capacity exceeded')
+for w,hours in planned.items():
+    if hours>tasks[w]['e']+1e-8:
+        errors.append(f'Iteration task estimates exceed the scenario package {w}')
+with (ROOT/'docs/control/control-units.csv').open(encoding='utf-8-sig',newline='') as f:
+    units=list(csv.DictReader(f))
+alloc=defaultdict(lambda:[0.,0.,0.])
+for u in units:
+    alloc[u['ИСР']][0]+=float(u['Доля бюджета'])
+    alloc[u['ИСР']][1]+=float(u['Бюджет ч'])
+    alloc[u['ИСР']][2]+=float(u['Бюджет руб'])
+if set(alloc)!=set(tasks):
+    errors.append('Control allocation must cover all WBS packages')
+for w,t in tasks.items():
+    a=alloc[w]
+    if abs(a[0]-1)>1e-8 or abs(a[1]-t['e'])>1e-8 or abs(a[2]-t['cost'])>.01:
+        errors.append(f'Control budget does not reconcile for {w}')
+
+for path in ROOT.rglob('*.md'):
+    txt=path.read_text(encoding='utf-8')
+    if re.search(r'ChatGPT|помощник|нейросет|от имени ИИ|в этой задаче|в данной работе|не предоставлен|не представлены|логин требует подтверждения',txt,re.I):
+        errors.append(f'Editorial wording: {path.relative_to(ROOT)}')
+
 if errors:
     raise SystemExit('\n'.join(errors))
-print('OK: local links, 25 WBS packages, tracker IDs/parents, cost and resource constraints')
+print('OK: links, WBS, two iteration plans, budgets, capacity, control allocation and document wording')
